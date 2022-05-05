@@ -9,20 +9,28 @@ import (
 	"strings"
 )
 
-var vlcCmd = &cobra.Command{
+var vlcPackCmd = &cobra.Command{
 	Use:   "vlc <path to source file> [path to packed file]",
 	Short: "Pack file using variable-length code",
-	RunE:  packVlc,
+	RunE:  vlcPack,
+}
+
+var vlcUnpackCmd = &cobra.Command{
+	Use:   "vlc <path to source file> [path to unpacked file]",
+	Short: "Unpack file using variable-length code",
+	RunE:  vlcUnpack,
 }
 
 func init() {
-	packCmd.AddCommand(vlcCmd)
+	packCmd.AddCommand(vlcPackCmd)
+	unpackCmd.AddCommand(vlcUnpackCmd)
 }
 
 var ErrEmptySourceFilePath = errors.New("path to source file is not specified")
 var ErrEmptyPackedFilePath = errors.New("path to packed file is not specified")
+var ErrEmptyUnpackedFilePath = errors.New("path to unpacked file is not specified")
 
-func packVlc(_ *cobra.Command, args []string) error {
+func vlcPack(_ *cobra.Command, args []string) error {
 	var (
 		srcFile    string
 		packedFile string
@@ -62,7 +70,48 @@ func packVlc(_ *cobra.Command, args []string) error {
 	return nil
 }
 
-func generateFileName(file, packedExt string) string {
+func vlcUnpack(_ *cobra.Command, args []string) error {
+	var (
+		srcFile      string
+		unpackedFile string
+	)
+
+	switch len(args) {
+	case 0:
+		return ErrEmptySourceFilePath
+	case 1:
+		srcFile = args[0]
+		unpackedFile = generateFileName(srcFile, "txt")
+	case 2:
+	default:
+		srcFile = args[0]
+		unpackedFile = args[1]
+	}
+
+	if srcFile == "" {
+		return ErrEmptySourceFilePath
+	}
+
+	if unpackedFile == "" {
+		return ErrEmptyUnpackedFilePath
+	}
+
+	srcData, err := os.ReadFile(srcFile)
+	if err != nil {
+		return err
+	}
+
+	unpackedData := string(srcData)
+	//unpackedData := vlc.Decode(string(srcData))
+	err = os.WriteFile(unpackedFile, []byte(unpackedData), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func generateFileName(file, ext string) string {
 	name := filepath.Base(file)
-	return strings.TrimSuffix(name, filepath.Ext(file)) + "." + packedExt
+	return strings.TrimSuffix(name, filepath.Ext(file)) + "." + ext
 }

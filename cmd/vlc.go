@@ -10,9 +10,9 @@ import (
 )
 
 var vlcCmd = &cobra.Command{
-	Use:   "vlc",
+	Use:   "vlc <path to source file> [path to packed file]",
 	Short: "Pack file using variable-length code",
-	Run:   packVlc,
+	RunE:  packVlc,
 }
 
 func init() {
@@ -22,7 +22,7 @@ func init() {
 var ErrEmptySourceFilePath = errors.New("path to source file is not specified")
 var ErrEmptyPackedFilePath = errors.New("path to packed file is not specified")
 
-func packVlc(_ *cobra.Command, args []string) {
+func packVlc(_ *cobra.Command, args []string) error {
 	var (
 		srcFile    string
 		packedFile string
@@ -30,7 +30,7 @@ func packVlc(_ *cobra.Command, args []string) {
 
 	switch len(args) {
 	case 0:
-		handleError(ErrEmptySourceFilePath)
+		return ErrEmptySourceFilePath
 	case 1:
 		srcFile = args[0]
 		packedFile = generateFileName(srcFile, "vlc")
@@ -41,23 +41,25 @@ func packVlc(_ *cobra.Command, args []string) {
 	}
 
 	if srcFile == "" {
-		handleError(ErrEmptySourceFilePath)
+		return ErrEmptySourceFilePath
 	}
 
 	if packedFile == "" {
-		handleError(ErrEmptyPackedFilePath)
+		return ErrEmptyPackedFilePath
 	}
 
 	srcData, err := os.ReadFile(srcFile)
 	if err != nil {
-		handleError(err)
+		return err
 	}
 
 	packedData := vlc.Encode(string(srcData))
 	err = os.WriteFile(packedFile, []byte(packedData), 0644)
 	if err != nil {
-		handleError(err)
+		return err
 	}
+
+	return nil
 }
 
 func generateFileName(file, packedExt string) string {

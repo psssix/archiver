@@ -4,14 +4,26 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 )
 
-var rootCmd = &cobra.Command{Short: "Simple archiver"}
+var rootCmd = &cobra.Command{
+	Use:   executableName(),
+	Short: "Simple archiver",
+}
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		handleError(err)
 	}
+}
+
+func executableName() string {
+	n, err := os.Executable()
+	if err != nil {
+		panic("can't get current executable name")
+	}
+	return filepath.Base(n)
 }
 
 func handleError(err error) {

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"errors"
+	"github.com/psssix/archiver/pkg/vlc"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,20 +48,15 @@ func packVlc(_ *cobra.Command, args []string) {
 		handleError(ErrEmptyPackedFilePath)
 	}
 
-	r, ErrEmptySourceFilePath := os.Open(srcFile)
-	if ErrEmptySourceFilePath != nil {
-		handleError(ErrEmptySourceFilePath)
+	srcData, err := os.ReadFile(srcFile)
+	if err != nil {
+		handleError(err)
 	}
 
-	srcData, ErrEmptySourceFilePath := ioutil.ReadAll(r)
-	if ErrEmptySourceFilePath != nil {
-		handleError(ErrEmptySourceFilePath)
-	}
-
-	packedData := srcData
-	ErrEmptySourceFilePath = ioutil.WriteFile(packedFile, []byte(packedData), 0644)
-	if ErrEmptySourceFilePath != nil {
-		handleError(ErrEmptySourceFilePath)
+	packedData := vlc.Encode(string(srcData))
+	err = os.WriteFile(packedFile, []byte(packedData), 0644)
+	if err != nil {
+		handleError(err)
 	}
 }
 

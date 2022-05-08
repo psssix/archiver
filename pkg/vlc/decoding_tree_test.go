@@ -50,7 +50,7 @@ func TestNewDecodingTree(t *testing.T) {
 	}
 }
 
-func TestDecodingTreeDecode(t *testing.T) {
+func TestDecodingTreeDecodeBinary(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -73,7 +73,7 @@ func TestDecodingTreeDecode(t *testing.T) {
 		test.name = fmt.Sprintf("decoding %q", test.want)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, dt.decode(test.bin), "decodingTree(...).decode(%v)", test.bin)
+			assert.Equalf(t, test.want, dt.decodeBinary(test.bin), "decodingTree(...).decodeBinary(%v)", test.bin)
 		})
 	}
 }

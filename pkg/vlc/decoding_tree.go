@@ -39,7 +39,7 @@ func (dt *decodingTree) add(code string, char rune) {
 	current.char = char
 }
 
-func (dt *decodingTree) decode(bin string) string {
+func (dt *decodingTree) decodeBinary(bin string) string {
 	var buf strings.Builder
 
 	current := dt

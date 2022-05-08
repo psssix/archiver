@@ -29,6 +29,28 @@ func TestEncode(t *testing.T) {
 	}
 }
 
+func TestDecode(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		want string
+	}{
+		{str: "22 69 40", want: "Ted"},
+		{str: "20 30 3C 18 77 4A E4 4D 28", want: "My name is Ted"},
+		{str: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68", want: "Some pretty SUBsequence"},
+	}
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("unpack %q", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, Decode(test.str), "Decode(%v)", test.str)
+		})
+	}
+}
+
 func TestEscapeUpper(t *testing.T) {
 	t.Parallel()
 

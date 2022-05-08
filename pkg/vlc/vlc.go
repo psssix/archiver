@@ -14,7 +14,10 @@ func Encode(str string) string {
 }
 
 func Decode(str string) string {
-	return ""
+	bin := splitHexChunks(str).toBinary().String()
+	decodingTree := newDecodingTree(newEncodingTable())
+	
+	return unescapeUpper(decodingTree.decodeBinary(bin))
 }
 
 // escapeUpper escape upper case chars:
@@ -57,7 +60,7 @@ func unescapeUpper(str string) string {
 
 		if ch == '!' {
 			capitalize = true
-			
+
 			continue
 		} else {
 			buf.WriteRune(ch)

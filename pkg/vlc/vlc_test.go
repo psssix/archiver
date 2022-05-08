@@ -29,7 +29,7 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-func TestPrepareText(t *testing.T) {
+func TestEscapeUpper(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -37,16 +37,40 @@ func TestPrepareText(t *testing.T) {
 		str  string
 		want string
 	}{
+		{str: "Ted", want: "!ted"},
 		{str: "My name is Ted", want: "!my name is !ted"},
 		{str: "Some pretty SUBsequence", want: "!some pretty !s!u!bsequence"},
 	}
 
 	for _, test := range tests {
 		test := test
-		test.name = fmt.Sprintf("preparing %q", test.str)
+		test.name = fmt.Sprintf("escape upper case chars in %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, prepareText(test.str), "prepareText(%v)", test.str)
+			assert.Equalf(t, test.want, escapeUpper(test.str), "escapeUpper(%v)", test.str)
+		})
+	}
+}
+
+func TestUnescapeUpper(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		want string
+	}{
+		{str: "!ted", want: "Ted"},
+		{str: "!my name is !ted", want: "My name is Ted"},
+		{str: "!some pretty !s!u!bsequence", want: "Some pretty SUBsequence"},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("unescape upper case chars for %q", test.want)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, unescapeUpper(test.str), "unescapeUpper(%v)", test.str)
 		})
 	}
 }

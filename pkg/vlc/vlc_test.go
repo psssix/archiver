@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestEncode(t *testing.T) {
+func TestPack(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -21,15 +21,15 @@ func TestEncode(t *testing.T) {
 
 	for _, test := range tests {
 		test := test
-		test.name = fmt.Sprintf("pack %q", test.str)
+		test.name = fmt.Sprintf("packing %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, Encode(test.str), "Encode(%v)", test.str)
+			assert.Equalf(t, test.want, Pack(test.str), "Pack(%v)", test.str)
 		})
 	}
 }
 
-func TestDecode(t *testing.T) {
+func TestUnpacking(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -43,10 +43,10 @@ func TestDecode(t *testing.T) {
 	}
 	for _, test := range tests {
 		test := test
-		test.name = fmt.Sprintf("unpack %q", test.str)
+		test.name = fmt.Sprintf("unpacking %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, Decode(test.str), "Decode(%v)", test.str)
+			assert.Equalf(t, test.want, Unpack(test.str), "Unpack(%v)", test.str)
 		})
 	}
 }

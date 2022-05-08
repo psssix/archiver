@@ -6,13 +6,15 @@ import (
 	"unicode"
 )
 
-const chunkSize = 8
-
 func Encode(str string) string {
 	str = prepareText(str)
-	chunks := splitChunks(encodeBinary(str), chunkSize)
+	chunks := splitBinaryChunks(encodeBinary(str), chunkSize)
 
 	return chunks.toHex().String()
+}
+
+func Decode(str string) string {
+	return ""
 }
 
 // prepareText prepares text to be fit for encode:

@@ -6,6 +6,29 @@ import (
 	"testing"
 )
 
+func TestEncode(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		want string
+	}{
+		{str: "Ted", want: "22 69 40"},
+		{str: "My name is Ted", want: "20 30 3C 18 77 4A E4 4D 28"},
+		{str: "Some pretty SUBsequence", want: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68"},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("pack %q", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, Encode(test.str), "Encode(%v)", test.str)
+		})
+	}
+}
+
 func TestPrepareText(t *testing.T) {
 	t.Parallel()
 
@@ -53,29 +76,6 @@ func TestEncodeBinary(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equalf(t, test.want, encodeBinary(test.str), "encodeBinary(%v)", test.str)
-		})
-	}
-}
-
-func TestEncode(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		str  string
-		want string
-	}{
-		{str: "Ted", want: "22 69 40"},
-		{str: "My name is Ted", want: "20 30 3C 18 77 4A E4 4D 28"},
-		{str: "Some pretty SUBsequence", want: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68"},
-	}
-
-	for _, test := range tests {
-		test := test
-		test.name = fmt.Sprintf("pack %q", test.str)
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equalf(t, test.want, Encode(test.str), "Encode(%v)", test.str)
 		})
 	}
 }

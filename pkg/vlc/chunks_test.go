@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestSplitChunks(t *testing.T) {
+func TestSplitBinaryChunks(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
@@ -20,7 +20,31 @@ func TestSplitChunks(t *testing.T) {
 		want binaryChunks
 	}{
 		{
-			str: "Ted",
+			name: "split binary from binary empty  binary expression with size 8",
+			args: args{
+				bin:  "",
+				size: 8,
+			},
+			want: binaryChunks{},
+		},
+		{
+			name: "split binary from binary expression \"0010\" with size 8",
+			args: args{
+				bin:  "0010",
+				size: 8,
+			},
+			want: binaryChunks{"00100000"},
+		},
+		{
+			name: "split binary from binary expression \"1111\" with size 8",
+			args: args{
+				bin:  "1111",
+				size: 8,
+			},
+			want: binaryChunks{"11110000"},
+		},
+		{
+			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 8),
 			args: args{
 				bin:  "001000100110100101",
 				size: 8,
@@ -28,7 +52,7 @@ func TestSplitChunks(t *testing.T) {
 			want: binaryChunks{"00100010", "01101001", "01000000"},
 		},
 		{
-			str: "Ted",
+			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 4),
 			args: args{
 				bin:  "001000100110100101",
 				size: 4,
@@ -36,7 +60,7 @@ func TestSplitChunks(t *testing.T) {
 			want: binaryChunks{"0010", "0010", "0110", "1001", "0100"},
 		},
 		{
-			str: "Ted",
+			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 6),
 			args: args{
 				bin:  "001000100110100101",
 				size: 6,
@@ -44,7 +68,7 @@ func TestSplitChunks(t *testing.T) {
 			want: binaryChunks{"001000", "100110", "100101"},
 		},
 		{
-			str: "My name is Ted",
+			name: fmt.Sprintf("split binary for string %q with size %d", "My name is Ted", 8),
 			args: args{
 				bin:  "001000000011000000111100000110000111011101001010111001000100110100101",
 				size: 8,
@@ -55,7 +79,7 @@ func TestSplitChunks(t *testing.T) {
 			},
 		},
 		{
-			str: "Some pretty SUBsequence",
+			name: fmt.Sprintf("split binary for string %q with size %d", "Some pretty SUBsequence", 8),
 			args: args{
 				bin:  "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
 				size: 8,
@@ -70,43 +94,14 @@ func TestSplitChunks(t *testing.T) {
 
 	for _, test := range tests {
 		test := test
-		test.name = fmt.Sprintf("split binary for string %q with size %d", test.str, test.args.size)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equalf(
 				t,
 				test.want,
-				splitChunks(test.args.bin, test.args.size),
-				"splitChunks(%v, %v)", test.args.bin, test.args.size,
+				splitBinaryChunks(test.args.bin, test.args.size),
+				"splitBinaryChunks(%v, %v)", test.args.bin, test.args.size,
 			)
-		})
-	}
-}
-
-func TestBinaryChunkToHex(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		bc   binaryChunk
-		want hexChunk
-	}{
-		{bc: binaryChunk("00100001"), want: "21"},
-		{bc: binaryChunk("01100010"), want: "62"},
-		{bc: binaryChunk("00011101"), want: "1D"},
-		{bc: binaryChunk("11000010"), want: "C2"},
-		{bc: binaryChunk("10100010"), want: "A2"},
-		{bc: binaryChunk("11001100"), want: "CC"},
-		{bc: binaryChunk("10000001"), want: "81"},
-		{bc: binaryChunk("11001000"), want: "C8"},
-	}
-
-	for _, test := range tests {
-		test := test
-		test.name = fmt.Sprintf("convert chunk %q to hex", test.bc)
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equalf(t, test.want, test.bc.toHex(), "toHex(%v)()", test.bc)
 		})
 	}
 }
@@ -141,12 +136,212 @@ func TestBinaryChunksToHex(t *testing.T) {
 			},
 		},
 	}
+
 	for _, test := range tests {
 		test := test
 		test.name = fmt.Sprintf("convert chunks set for string %q to hex", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bcs.toHex(), "toHex(%v)()", test.bcs)
+			assert.Equalf(t, test.want, test.bcs.toHex(), "binaryChunks.toHex(%v)()", test.bcs)
+		})
+	}
+}
+
+func TestBinaryChunkToHex(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		bc   binaryChunk
+		want hexChunk
+	}{
+		{bc: binaryChunk("00100001"), want: hexChunk("21")},
+		{bc: binaryChunk("01100010"), want: hexChunk("62")},
+		{bc: binaryChunk("00011101"), want: hexChunk("1D")},
+		{bc: binaryChunk("11000010"), want: hexChunk("C2")},
+		{bc: binaryChunk("10100010"), want: hexChunk("A2")},
+		{bc: binaryChunk("11001100"), want: hexChunk("CC")},
+		{bc: binaryChunk("10000001"), want: hexChunk("81")},
+		{bc: binaryChunk("11001000"), want: hexChunk("C8")},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("convert chunk %q to hex", test.bc)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, test.bc.toHex(), "binaryChunk.toHex(%v)()", test.bc)
+		})
+	}
+}
+
+func TestBinaryChunksString(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		bcs  binaryChunks
+		want string
+	}{
+		{
+			name: "stringify empty binary chunks",
+			bcs:  binaryChunks{},
+			want: "",
+		},
+
+		{
+			name: "stringify one binary chunks",
+			bcs:  binaryChunks{"00000001"},
+			want: "00000001",
+		},
+		{
+			name: fmt.Sprintf("stringify binary chunks set for string %q", "Ted"),
+			bcs:  binaryChunks{"00100010", "01101001", "01000000"},
+			want: "001000100110100101000000",
+		},
+		{
+			name: fmt.Sprintf("stringify binary chunks set for string %q", "My name is Ted"),
+			bcs: binaryChunks{
+				"00100000", "00110000", "00111100", "00011000", "01110111", "01001010", "11100100", "01001101",
+				"00101000",
+			},
+			want: "001000000011000000111100000110000111011101001010111001000100110100101000",
+		},
+		{
+			name: fmt.Sprintf("stringify binary chunks set for string %q", "Some pretty SUBsequence"),
+			str:  "Some pretty SUBsequence",
+			bcs: binaryChunks{
+				"00100001", "01100010", "00011101", "11000010", "10100010", "11001100", "10000001", "11001000",
+				"01010010", "00000110", "01000000", "00100101", "10100000", "00000010", "00111011", "00000001",
+				"01101000",
+			},
+			want: "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101000",
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, test.bcs.String(), "binaryChunk.String(%v)()", test.bcs)
+		})
+	}
+}
+
+func TestSplitHexChunks(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		want hexChunks
+	}{
+		{
+			name: "split hex chunks from string when empty chunk",
+			str:  "",
+			want: hexChunks{},
+		},
+		{
+			name: "split hex chunks from string when one chunk",
+			str:  "22",
+			want: hexChunks{"22"},
+		},
+		{
+			name: fmt.Sprintf("split hex chunks from string for expression %q", "Ted"),
+			str:  "22 69 40",
+			want: hexChunks{"22", "69", "40"},
+		},
+		{
+			name: fmt.Sprintf("split hex chunks from string for expression %q", "My name is Ted"),
+			str:  "20 30 3C 18 77 4A E4 4D 28",
+			want: hexChunks{"20", "30", "3C", "18", "77", "4A", "E4", "4D", "28"},
+		},
+		{
+			name: fmt.Sprintf("split hex chunks from string for expression %q", "Some pretty SUBsequence"),
+			str:  "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68",
+			want: hexChunks{
+				"21", "62", "1D", "C2", "A2", "CC", "81", "C8", "52", "06", "40", "25", "A0", "02", "3B", "01", "68",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, splitHexChunks(test.str), "splitHexChunks(%v)", test.str)
+		})
+	}
+}
+
+func TestHexChunksToBinary(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		str  string
+		hcs  hexChunks
+		want binaryChunks
+	}{
+		{str: "Ted", hcs: hexChunks{"22", "69", "40"}, want: binaryChunks{"00100010", "01101001", "01000000"}},
+		{
+			str: "My name is Ted",
+			hcs: hexChunks{"20", "30", "3C", "18", "77", "4A", "E4", "4D", "28"},
+			want: binaryChunks{
+				"00100000", "00110000", "00111100", "00011000", "01110111", "01001010", "11100100", "01001101",
+				"00101000",
+			},
+		},
+		{
+			str: "Some pretty SUBsequence",
+			hcs: hexChunks{
+				"21", "62", "1D", "C2", "A2", "CC", "81", "C8", "52", "06", "40", "25", "A0", "02", "3B", "01", "68",
+			},
+			want: binaryChunks{
+				"00100001", "01100010", "00011101", "11000010", "10100010", "11001100", "10000001", "11001000",
+				"01010010", "00000110", "01000000", "00100101", "10100000", "00000010", "00111011", "00000001",
+				"01101000",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("convert chunks set for string %q to binary", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, test.hcs.toBinary(), "hexChunks.toBinary(%v)()", test.hcs)
+		})
+	}
+}
+
+func TestHexChunkToBinary(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		hc   hexChunk
+		want binaryChunk
+	}{
+		{hc: hexChunk("7F"), want: binaryChunk("01111111")},
+		{hc: hexChunk("80"), want: binaryChunk("10000000")},
+		{hc: hexChunk("21"), want: binaryChunk("00100001")},
+		{hc: hexChunk("62"), want: binaryChunk("01100010")},
+		{hc: hexChunk("1D"), want: binaryChunk("00011101")},
+		{hc: hexChunk("C2"), want: binaryChunk("11000010")},
+		{hc: hexChunk("A2"), want: binaryChunk("10100010")},
+		{hc: hexChunk("CC"), want: binaryChunk("11001100")},
+		{hc: hexChunk("81"), want: binaryChunk("10000001")},
+		{hc: hexChunk("C8"), want: binaryChunk("11001000")},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("convert chunk %q to binary", test.hc)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equalf(t, test.want, test.hc.toBinary(), "hexChunk.toBinary(%v)()", test.hc)
 		})
 	}
 }
@@ -192,7 +387,7 @@ func TestHexChunksToString(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.hcs.String(), "String(%v)", test.hcs)
+			assert.Equalf(t, test.want, test.hcs.String(), "hexChunks.String(%v)()", test.hcs)
 		})
 	}
 }

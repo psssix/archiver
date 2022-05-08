@@ -8,8 +8,8 @@ type decodingTree struct {
 	one  *decodingTree
 }
 
-func newDecodingTree(et encodingTable) decodingTree {
-	tree := decodingTree{}
+func newDecodingTree(et encodingTable) *decodingTree {
+	tree := new(decodingTree)
 
 	for char, code := range et {
 		tree.add(code, char)

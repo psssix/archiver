@@ -29,8 +29,8 @@ func splitBinaryChunks(bin string, size int) binaryChunks {
 	chunks := make(binaryChunks, 0, count)
 	var buf strings.Builder
 
-	for i, ch := range bin {
-		buf.WriteRune(ch)
+	for i, bit := range bin {
+		buf.WriteRune(bit)
 
 		if (i+1)%size == 0 {
 			chunks = append(chunks, binaryChunk(buf.String()))

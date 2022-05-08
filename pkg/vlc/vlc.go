@@ -40,22 +40,22 @@ func prepareText(str string) string {
 func encodeBinary(str string) string {
 	var buf strings.Builder
 
-	for _, ch := range str {
-		buf.WriteString(toBinary(ch))
+	for _, char := range str {
+		buf.WriteString(toBinary(char))
 	}
 
 	return buf.String()
 }
 
-func toBinary(ch rune) string {
+func toBinary(char rune) string {
 	table := newEncodingTable()
 
-	bin, ok := table[ch]
+	code, ok := table[char]
 	if !ok {
-		panic(fmt.Sprintf("unknown character %q", ch))
+		panic(fmt.Sprintf("unknown character %q", char))
 	}
 
-	return bin
+	return code
 }
 
 type encodingTable map[rune]string

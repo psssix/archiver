@@ -142,7 +142,7 @@ func TestBinaryChunksToHex(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunks set for string %q to hex", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bcs.toHex(), "binaryChunks.toHex(%v)()", test.bcs)
+			assert.Equalf(t, test.want, test.bcs.toHex(), "binaryChunks(%v).toHex()", test.bcs)
 		})
 	}
 }
@@ -170,7 +170,7 @@ func TestBinaryChunkToHex(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunk %q to hex", test.bc)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bc.toHex(), "binaryChunk.toHex(%v)()", test.bc)
+			assert.Equalf(t, test.want, test.bc.toHex(), "binaryChunk(%v).toHex()", test.bc)
 		})
 	}
 }
@@ -224,7 +224,7 @@ func TestBinaryChunksString(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bcs.String(), "binaryChunk.String(%v)()", test.bcs)
+			assert.Equalf(t, test.want, test.bcs.String(), "binaryChunks(%v).String()", test.bcs)
 		})
 	}
 }
@@ -311,7 +311,7 @@ func TestHexChunksToBinary(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunks set for string %q to binary", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.hcs.toBinary(), "hexChunks.toBinary(%v)()", test.hcs)
+			assert.Equalf(t, test.want, test.hcs.toBinary(), "hexChunks(%v).toBinary()", test.hcs)
 		})
 	}
 }
@@ -341,7 +341,7 @@ func TestHexChunkToBinary(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunk %q to binary", test.hc)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.hc.toBinary(), "hexChunk.toBinary(%v)()", test.hc)
+			assert.Equalf(t, test.want, test.hc.toBinary(), "hexChunk(%v).toBinary()", test.hc)
 		})
 	}
 }
@@ -387,7 +387,7 @@ func TestHexChunksToString(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.hcs.String(), "hexChunks.String(%v)()", test.hcs)
+			assert.Equalf(t, test.want, test.hcs.String(), "hexChunks(%v).String()", test.hcs)
 		})
 	}
 }

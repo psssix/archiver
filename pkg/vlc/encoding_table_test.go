@@ -14,6 +14,7 @@ func TestEncodeBinary(t *testing.T) {
 		str  string
 		want string
 	}{
+		{str: "", want: ""},
 		{str: "!ted", want: "001000100110100101"},
 		{str: "!my name is !ted", want: "001000000011000000111100000110000111011101001010111001000100110100101"},
 		{

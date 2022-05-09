@@ -58,6 +58,7 @@ func TestDecodingTreeDecodeBinary(t *testing.T) {
 		bString string
 		want    string
 	}{
+		{bString: "", want: ""},
 		{bString: "001000100110100101", want: "!ted"},
 		{bString: "001000000011000000111100000110000111011101001010111001000100110100101", want: "!my name is !ted"},
 		{

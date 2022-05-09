@@ -101,7 +101,7 @@ func vlcUnpack(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	unpackedData := vlc.Unpack(string(srcData))
+	unpackedData := vlc.Unpack(srcData)
 	err = os.WriteFile(unpackedFile, []byte(unpackedData), 0644)
 	if err != nil {
 		return err

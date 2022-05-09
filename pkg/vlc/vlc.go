@@ -6,14 +6,12 @@ import (
 )
 
 func Pack(str string) []byte {
-	return splitBinaryChunks(
-		encodeBinary(escapeUpper(str)),
-		chunkSize,
-	).Bytes()
+	bString := encodeBinary(escapeUpper(str))
+	return fromBinaryString(bString, chunkSize).Bytes()
 }
 
-func Unpack(str string) string {
-	bString := splitHexChunks(str).toBinary().String()
+func Unpack(bytes []byte) string {
+	bString := fromBytes(bytes).String()
 	tree := newDecodingTree(newEncodingTable())
 	return unescapeUpper(tree.decodeBinary(bString))
 }

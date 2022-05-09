@@ -5,15 +5,21 @@ import (
 	"unicode"
 )
 
-func Pack(str string) []byte {
-	bString := encodeBinary(escapeUpper(str))
-	return fromBinaryString(bString, chunkSize).Bytes()
+type Compressor struct{}
+
+func New() Compressor {
+	return Compressor{}
 }
 
-func Unpack(bytes []byte) string {
+func (_ Compressor) Pack(str string) ([]byte, error) {
+	bString := encodeBinary(escapeUpper(str))
+	return fromBinaryString(bString, chunkSize).Bytes(), nil
+}
+
+func (_ Compressor) Unpack(bytes []byte) (string, error) {
 	bString := fromBytes(bytes).String()
 	tree := newDecodingTree(newEncodingTable())
-	return unescapeUpper(tree.decodeBinary(bString))
+	return unescapeUpper(tree.decodeBinary(bString)), nil
 }
 
 // escapeUpper escape upper case chars:

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"github.com/psssix/archiver/pkg/vlc"
+	"github.com/psssix/archiver/pkg/compression/vlc"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -61,7 +61,11 @@ func vlcPack(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	packedData := vlc.Pack(string(srcData))
+	packedData, err := vlc.New().Pack(string(srcData))
+	if err != nil {
+		return err
+	}
+
 	err = os.WriteFile(packedFile, packedData, 0644)
 	if err != nil {
 		return err
@@ -101,7 +105,11 @@ func vlcUnpack(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	unpackedData := vlc.Unpack(srcData)
+	unpackedData, err := vlc.New().Unpack(srcData)
+	if err != nil {
+		return err
+	}
+
 	err = os.WriteFile(unpackedFile, []byte(unpackedData), 0644)
 	if err != nil {
 		return err

@@ -38,7 +38,8 @@ func TestPack(t *testing.T) {
 		test.name = fmt.Sprintf("packing %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, Pack(test.str), "Pack(%v)", test.str)
+			bytes, _ := New().Pack(test.str)
+			assert.Equalf(t, test.want, bytes, "Compressor.Pack(%v)", test.str)
 		})
 	}
 }
@@ -74,7 +75,8 @@ func TestUnpacking(t *testing.T) {
 		test.name = fmt.Sprintf("unpacking %q", test.want)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, Unpack(test.bytes), "Unpack(%v)", test.bytes)
+			str, _ := New().Unpack(test.bytes)
+			assert.Equalf(t, test.want, str, "Compressor.Unpack(%v)", test.bytes)
 		})
 	}
 }

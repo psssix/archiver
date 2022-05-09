@@ -6,10 +6,7 @@ import (
 	"strings"
 )
 
-const (
-	chunkSize          = 8
-	hexChunksSeparator = " "
-)
+const chunkSize = 8
 
 type (
 	binaryChunk  string

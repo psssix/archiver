@@ -12,7 +12,7 @@ func TestNewDecodingTree(t *testing.T) {
 	tests := []struct {
 		name string
 		et   encodingTable
-		want decodingTree
+		want *decodingTree
 	}{
 		{
 			name: "test with 3 symbols",
@@ -21,7 +21,7 @@ func TestNewDecodingTree(t *testing.T) {
 				'b': "1001",
 				'c': "0101",
 			},
-			want: decodingTree{
+			want: &decodingTree{
 				zero: &decodingTree{
 					one: &decodingTree{
 						zero: &decodingTree{

@@ -73,7 +73,7 @@ func (bc binaryChunk) toHex() hexChunk {
 	return hexChunk(chunk)
 }
 
-// String join binary chunks info one lines and returns as string
+// String join string representation of binary chunks info one lines and returns as byte slice
 func (bcs binaryChunks) String() string {
 	if len(bcs) == 0 {
 		return ""
@@ -86,6 +86,27 @@ func (bcs binaryChunks) String() string {
 	}
 
 	return buf.String()
+}
+
+// Bytes join string representation of binary chunks info one lines and returns as byte slice
+func (bcs binaryChunks) Bytes() []byte {
+	bytes := make([]byte, 0, len(bcs))
+
+	for _, bc := range bcs {
+		bytes = append(bytes, bc.Byte())
+	}
+
+	return bytes
+}
+
+func (bc binaryChunk) Byte() byte {
+	const binaryNumberBase = 2
+	num, err := strconv.ParseUint(string(bc), binaryNumberBase, chunkSize)
+	if err != nil {
+		panic(fmt.Sprintf("can't parse binary chunk to number: %s", err.Error()))
+	}
+
+	return byte(num)
 }
 
 type (

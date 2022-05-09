@@ -12,11 +12,25 @@ func TestPack(t *testing.T) {
 	tests := []struct {
 		name string
 		str  string
-		want string
+		want []byte
 	}{
-		{str: "Ted", want: "22 69 40"},
-		{str: "My name is Ted", want: "20 30 3C 18 77 4A E4 4D 28"},
-		{str: "Some pretty SUBsequence", want: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68"},
+		{str: "", want: []byte{}},
+		{str: "Ted", want: []byte{0b00100010, 0b01101001, 0b01000000}},
+		{
+			str: "My name is Ted",
+			want: []byte{
+				0b00100000, 0b00110000, 0b00111100, 0b00011000, 0b01110111, 0b01001010, 0b11100100, 0b01001101,
+				0b00101000,
+			},
+		},
+		{
+			str: "Some pretty SUBsequence",
+			want: []byte{
+				0b00100001, 0b01100010, 0b00011101, 0b11000010, 0b10100010, 0b11001100, 0b10000001, 0b11001000,
+				0b01010010, 0b00000110, 0b01000000, 0b00100101, 0b10100000, 0b00000010, 0b00111011, 0b00000001,
+				0b01101000,
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -37,6 +51,7 @@ func TestUnpacking(t *testing.T) {
 		str  string
 		want string
 	}{
+		{str: "", want: ""},
 		{str: "22 69 40", want: "Ted"},
 		{str: "20 30 3C 18 77 4A E4 4D 28", want: "My name is Ted"},
 		{str: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68", want: "Some pretty SUBsequence"},
@@ -59,6 +74,7 @@ func TestEscapeUpper(t *testing.T) {
 		str  string
 		want string
 	}{
+		{str: "", want: ""},
 		{str: "Ted", want: "!ted"},
 		{str: "My name is Ted", want: "!my name is !ted"},
 		{str: "Some pretty SUBsequence", want: "!some pretty !s!u!bsequence"},
@@ -82,6 +98,7 @@ func TestUnescapeUpper(t *testing.T) {
 		str  string
 		want string
 	}{
+		{str: "", want: ""},
 		{str: "!ted", want: "Ted"},
 		{str: "!my name is !ted", want: "My name is Ted"},
 		{str: "!some pretty !s!u!bsequence", want: "Some pretty SUBsequence"},

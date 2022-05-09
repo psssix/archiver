@@ -5,15 +5,17 @@ import (
 	"unicode"
 )
 
-func Pack(str string) string {
-	bin := encodeBinary(escapeUpper(str))
-	return splitBinaryChunks(bin, chunkSize).toHex().String()
+func Pack(str string) []byte {
+	return splitBinaryChunks(
+		encodeBinary(escapeUpper(str)),
+		chunkSize,
+	).Bytes()
 }
 
 func Unpack(str string) string {
-	bin := splitHexChunks(str).toBinary().String()
+	bString := splitHexChunks(str).toBinary().String()
 	tree := newDecodingTree(newEncodingTable())
-	return unescapeUpper(tree.decodeBinary(bin))
+	return unescapeUpper(tree.decodeBinary(bString))
 }
 
 // escapeUpper escape upper case chars:

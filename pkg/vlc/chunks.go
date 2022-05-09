@@ -19,8 +19,8 @@ type (
 // splitBinaryChunks splits binary string by chunks with given size.
 //
 // i.g.: '100101011001010110010101' -> '10010101 10010101 10010101'
-func splitBinaryChunks(bin string, size int) binaryChunks {
-	strLen := len(bin)
+func splitBinaryChunks(bString string, size int) binaryChunks {
+	strLen := len(bString)
 	count := strLen / size
 	if strLen%size != 0 {
 		count++
@@ -29,7 +29,7 @@ func splitBinaryChunks(bin string, size int) binaryChunks {
 	chunks := make(binaryChunks, 0, count)
 	var buf strings.Builder
 
-	for i, bit := range bin {
+	for i, bit := range bString {
 		buf.WriteRune(bit)
 
 		if (i+1)%size == 0 {

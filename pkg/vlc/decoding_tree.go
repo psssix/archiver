@@ -39,12 +39,12 @@ func (dt *decodingTree) add(code string, char rune) {
 	current.char = char
 }
 
-func (dt *decodingTree) decodeBinary(bin string) string {
+func (dt *decodingTree) decodeBinary(bString string) string {
 	var buf strings.Builder
 
 	current := dt
 
-	for _, bit := range bin {
+	for _, bit := range bString {
 		if current.char != rune(0) {
 			buf.WriteRune(current.char)
 			current = dt

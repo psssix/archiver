@@ -10,8 +10,8 @@ func TestSplitBinaryChunks(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		bin  string
-		size int
+		bString string
+		size    int
 	}
 	tests := []struct {
 		name string
@@ -22,56 +22,56 @@ func TestSplitBinaryChunks(t *testing.T) {
 		{
 			name: "split binary from binary empty  binary expression with size 8",
 			args: args{
-				bin:  "",
-				size: 8,
+				bString: "",
+				size:    8,
 			},
 			want: binaryChunks{},
 		},
 		{
 			name: "split binary from binary expression \"0010\" with size 8",
 			args: args{
-				bin:  "0010",
-				size: 8,
+				bString: "0010",
+				size:    8,
 			},
 			want: binaryChunks{"00100000"},
 		},
 		{
 			name: "split binary from binary expression \"1111\" with size 8",
 			args: args{
-				bin:  "1111",
-				size: 8,
+				bString: "1111",
+				size:    8,
 			},
 			want: binaryChunks{"11110000"},
 		},
 		{
 			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 8),
 			args: args{
-				bin:  "001000100110100101",
-				size: 8,
+				bString: "001000100110100101",
+				size:    8,
 			},
 			want: binaryChunks{"00100010", "01101001", "01000000"},
 		},
 		{
 			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 4),
 			args: args{
-				bin:  "001000100110100101",
-				size: 4,
+				bString: "001000100110100101",
+				size:    4,
 			},
 			want: binaryChunks{"0010", "0010", "0110", "1001", "0100"},
 		},
 		{
 			name: fmt.Sprintf("split binary for string %q with size %d", "Ted", 6),
 			args: args{
-				bin:  "001000100110100101",
-				size: 6,
+				bString: "001000100110100101",
+				size:    6,
 			},
 			want: binaryChunks{"001000", "100110", "100101"},
 		},
 		{
 			name: fmt.Sprintf("split binary for string %q with size %d", "My name is Ted", 8),
 			args: args{
-				bin:  "001000000011000000111100000110000111011101001010111001000100110100101",
-				size: 8,
+				bString: "001000000011000000111100000110000111011101001010111001000100110100101",
+				size:    8,
 			},
 			want: binaryChunks{
 				"00100000", "00110000", "00111100", "00011000", "01110111", "01001010", "11100100", "01001101",
@@ -81,8 +81,8 @@ func TestSplitBinaryChunks(t *testing.T) {
 		{
 			name: fmt.Sprintf("split binary for string %q with size %d", "Some pretty SUBsequence", 8),
 			args: args{
-				bin:  "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
-				size: 8,
+				bString: "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
+				size:    8,
 			},
 			want: binaryChunks{
 				"00100001", "01100010", "00011101", "11000010", "10100010", "11001100", "10000001", "11001000",
@@ -99,8 +99,8 @@ func TestSplitBinaryChunks(t *testing.T) {
 			assert.Equalf(
 				t,
 				test.want,
-				splitBinaryChunks(test.args.bin, test.args.size),
-				"splitBinaryChunks(%v, %v)", test.args.bin, test.args.size,
+				splitBinaryChunks(test.args.bString, test.args.size),
+				"splitBinaryChunks(%v, %v)", test.args.bString, test.args.size,
 			)
 		})
 	}

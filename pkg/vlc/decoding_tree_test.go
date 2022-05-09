@@ -54,15 +54,15 @@ func TestDecodingTreeDecodeBinary(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		bin  string
-		want string
+		name    string
+		bString string
+		want    string
 	}{
-		{bin: "001000100110100101", want: "!ted"},
-		{bin: "001000000011000000111100000110000111011101001010111001000100110100101", want: "!my name is !ted"},
+		{bString: "001000100110100101", want: "!ted"},
+		{bString: "001000000011000000111100000110000111011101001010111001000100110100101", want: "!my name is !ted"},
 		{
-			bin:  "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
-			want: "!some pretty !s!u!bsequence",
+			bString: "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
+			want:    "!some pretty !s!u!bsequence",
 		},
 	}
 
@@ -73,7 +73,7 @@ func TestDecodingTreeDecodeBinary(t *testing.T) {
 		test.name = fmt.Sprintf("decoding %q", test.want)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, dt.decodeBinary(test.bin), "decodingTree(...).decodeBinary(%v)", test.bin)
+			assert.Equalf(t, test.want, dt.decodeBinary(test.bString), "decodingTree(...).decodeBinary(%v)", test.bString)
 		})
 	}
 }

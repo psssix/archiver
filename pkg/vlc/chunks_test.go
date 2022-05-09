@@ -106,75 +106,6 @@ func TestSplitBinaryChunks(t *testing.T) {
 	}
 }
 
-func TestBinaryChunksToHex(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		str  string
-		bcs  binaryChunks
-		want hexChunks
-	}{
-		{str: "Ted", bcs: binaryChunks{"00100010", "01101001", "01000000"}, want: hexChunks{"22", "69", "40"}},
-		{
-			str: "My name is Ted",
-			bcs: binaryChunks{
-				"00100000", "00110000", "00111100", "00011000", "01110111", "01001010", "11100100", "01001101",
-				"00101000",
-			},
-			want: hexChunks{"20", "30", "3C", "18", "77", "4A", "E4", "4D", "28"},
-		},
-		{
-			str: "Some pretty SUBsequence",
-			bcs: binaryChunks{
-				"00100001", "01100010", "00011101", "11000010", "10100010", "11001100", "10000001", "11001000",
-				"01010010", "00000110", "01000000", "00100101", "10100000", "00000010", "00111011", "00000001",
-				"01101000",
-			},
-			want: hexChunks{
-				"21", "62", "1D", "C2", "A2", "CC", "81", "C8", "52", "06", "40", "25", "A0", "02", "3B", "01", "68",
-			},
-		},
-	}
-
-	for _, test := range tests {
-		test := test
-		test.name = fmt.Sprintf("convert chunks set for string %q to hex", test.str)
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equalf(t, test.want, test.bcs.toHex(), "binaryChunks(%v).toHex()", test.bcs)
-		})
-	}
-}
-
-func TestBinaryChunkToHex(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		bc   binaryChunk
-		want hexChunk
-	}{
-		{bc: binaryChunk("00100001"), want: hexChunk("21")},
-		{bc: binaryChunk("01100010"), want: hexChunk("62")},
-		{bc: binaryChunk("00011101"), want: hexChunk("1D")},
-		{bc: binaryChunk("11000010"), want: hexChunk("C2")},
-		{bc: binaryChunk("10100010"), want: hexChunk("A2")},
-		{bc: binaryChunk("11001100"), want: hexChunk("CC")},
-		{bc: binaryChunk("10000001"), want: hexChunk("81")},
-		{bc: binaryChunk("11001000"), want: hexChunk("C8")},
-	}
-
-	for _, test := range tests {
-		test := test
-		test.name = fmt.Sprintf("convert chunk %q to hex", test.bc)
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equalf(t, test.want, test.bc.toHex(), "binaryChunk(%v).toHex()", test.bc)
-		})
-	}
-}
-
 func TestBinaryChunksString(t *testing.T) {
 	t.Parallel()
 
@@ -421,52 +352,6 @@ func TestHexChunkToBinary(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equalf(t, test.want, test.hc.toBinary(), "hexChunk(%v).toBinary()", test.hc)
-		})
-	}
-}
-
-func TestHexChunksToString(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		hcs  hexChunks
-		want string
-	}{
-		{
-			name: "stringify empty hex chunks",
-			hcs:  hexChunks{},
-			want: "",
-		},
-		{
-			name: "stringify one hex chunks",
-			hcs:  hexChunks{"22"},
-			want: "22",
-		},
-		{
-			name: fmt.Sprintf("stringify hex chunks set for string %q", "Ted"),
-			hcs:  hexChunks{"22", "69", "40"},
-			want: "22 69 40",
-		},
-		{
-			name: fmt.Sprintf("stringify hex chunks set for string %q", "My name is Ted"),
-			hcs:  hexChunks{"20", "30", "3C", "18", "77", "4A", "E4", "4D", "28"},
-			want: "20 30 3C 18 77 4A E4 4D 28",
-		},
-		{
-			name: fmt.Sprintf("stringify hex chunks set for string %q", "Some pretty SUBsequence"),
-			hcs: hexChunks{
-				"21", "62", "1D", "C2", "A2", "CC", "81", "C8", "52", "06", "40", "25", "A0", "02", "3B", "01", "68",
-			},
-			want: "21 62 1D C2 A2 CC 81 C8 52 06 40 25 A0 02 3B 01 68",
-		},
-	}
-
-	for _, test := range tests {
-		test := test
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equalf(t, test.want, test.hcs.String(), "hexChunks(%v).String()", test.hcs)
 		})
 	}
 }

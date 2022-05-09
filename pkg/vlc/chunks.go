@@ -47,33 +47,6 @@ func splitBinaryChunks(bin string, size int) binaryChunks {
 	return chunks
 }
 
-func (bcs binaryChunks) toHex() hexChunks {
-	chunks := make(hexChunks, 0, len(bcs))
-
-	for _, bc := range bcs {
-		chunks = append(chunks, bc.toHex())
-	}
-
-	return chunks
-}
-
-func (bc binaryChunk) toHex() hexChunk {
-	const binaryNumberBase = 2
-	num, err := strconv.ParseUint(string(bc), binaryNumberBase, chunkSize)
-	if err != nil {
-		panic(fmt.Sprintf("can't parse binary chunk to number: %s", err.Error()))
-	}
-
-	chunk := strings.ToUpper(fmt.Sprintf("%x", num))
-
-	if len(chunk) == 1 {
-		chunk = "0" + chunk
-	}
-
-	return hexChunk(chunk)
-}
-
-// String join string representation of binary chunks info one lines and returns as byte slice
 func (bcs binaryChunks) String() string {
 	if len(bcs) == 0 {
 		return ""
@@ -151,22 +124,4 @@ func (hc hexChunk) toBinary() binaryChunk {
 	chunk := fmt.Sprintf("%08b", num)
 
 	return binaryChunk(chunk)
-}
-
-// String join hex chunks info one lines and returns as string
-func (hcs hexChunks) String() string {
-	if len(hcs) == 0 {
-		return ""
-	}
-
-	var buf strings.Builder
-
-	buf.WriteString(string(hcs[0]))
-
-	for _, hc := range hcs[1:] {
-		buf.WriteString(hexChunksSeparator)
-		buf.WriteString(string(hc))
-	}
-
-	return buf.String()
 }

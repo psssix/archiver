@@ -12,7 +12,10 @@ func New() Codec {
 }
 
 func (_ Codec) Pack(str string) ([]byte, error) {
-	bString, _ := encodeBinary(escapeUpper(str))
+	bString, err := encodeBinary(escapeUpper(str))
+	if err != nil {
+		return nil, err
+	}
 	return fromBinaryString(bString, chunkSize).Bytes(), nil
 }
 

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestPack(t *testing.T) {
+func TestCodecPack(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -44,7 +44,33 @@ func TestPack(t *testing.T) {
 	}
 }
 
-func TestUnpacking(t *testing.T) {
+func TestCodecPackUnknownCharacterError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		str   string
+		error string
+	}{
+		{str: "®", error: "encoding to binary error, unknown character '®'"},
+		{str: "√", error: "encoding to binary error, unknown character '√'"},
+		{str: "∫", error: "encoding to binary error, unknown character '∫'"},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("packing %q with error", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			bytes, err := New().Pack(test.str)
+			assert.Nilf(t, bytes, "Codec.Pack(%v) not empty result when error", test.str)
+			assert.IsTypef(t, &EncodingError{}, err, "Codec.Pack(%v) unexpected error type", test.str)
+			assert.Equalf(t, test.error, err.Error(), "Codec.Pack(%v) unexpected error message", test.str)
+		})
+	}
+}
+
+func TestCodecUnpacking(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

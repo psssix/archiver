@@ -15,7 +15,7 @@ func NewEncodingError(err string, r rune) *EncodingError {
 }
 
 func (e *EncodingError) Error() string {
-	return fmt.Sprintf("encode to binary error, %s %q", e.err, e.r)
+	return fmt.Sprintf("encoding to binary error, %s %q", e.err, e.r)
 }
 
 // encodeBinary encode string into binary codes string without spaces.

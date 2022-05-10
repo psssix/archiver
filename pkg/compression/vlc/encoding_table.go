@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-type EncodeError struct {
+type EncodingError struct {
 	err string
 	r   rune
 }
 
-func NewEncodeError(err string, r rune) *EncodeError {
-	return &EncodeError{err: err, r: r}
+func NewEncodingError(err string, r rune) *EncodingError {
+	return &EncodingError{err: err, r: r}
 }
 
-func (e *EncodeError) Error() string {
+func (e *EncodingError) Error() string {
 	return fmt.Sprintf("encode to binary error, %s %q", e.err, e.r)
 }
 
@@ -38,7 +38,7 @@ func toBinary(r rune) (string, error) {
 
 	code, ok := table[r]
 	if !ok {
-		return "", NewEncodeError("unknown character", r)
+		return "", NewEncodingError("unknown character", r)
 	}
 
 	return code, nil

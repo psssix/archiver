@@ -5,26 +5,43 @@ import (
 	"strings"
 )
 
-// encodeBinary encode string into binary codes string without spaces.
-func encodeBinary(str string) string {
-	var buf strings.Builder
-
-	for _, char := range str {
-		buf.WriteString(toBinary(char))
-	}
-
-	return buf.String()
+type EncodeError struct {
+	err string
+	r   rune
 }
 
-func toBinary(char rune) string {
-	table := newEncodingTable()
+func NewEncodeError(err string, r rune) *EncodeError {
+	return &EncodeError{err: err, r: r}
+}
 
-	code, ok := table[char]
-	if !ok {
-		panic(fmt.Sprintf("unknown character %q", char))
+func (e *EncodeError) Error() string {
+	return fmt.Sprintf("encode to binary error, %s %q", e.err, e.r)
+}
+
+// encodeBinary encode string into binary codes string without spaces.
+func encodeBinary(str string) (string, error) {
+	var buf strings.Builder
+
+	for _, r := range str {
+		binary, err := toBinary(r)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString(binary)
 	}
 
-	return code
+	return buf.String(), nil
+}
+
+func toBinary(r rune) (string, error) {
+	table := newEncodingTable()
+
+	code, ok := table[r]
+	if !ok {
+		return "", NewEncodeError("unknown character", r)
+	}
+
+	return code, nil
 }
 
 type encodingTable map[rune]string

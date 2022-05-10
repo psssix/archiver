@@ -39,7 +39,7 @@ func TestPack(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			bytes, _ := New().Pack(test.str)
-			assert.Equalf(t, test.want, bytes, "Compressor.Pack(%v)", test.str)
+			assert.Equalf(t, test.want, bytes, "Codec.Pack(%v)", test.str)
 		})
 	}
 }
@@ -76,7 +76,7 @@ func TestUnpacking(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			str, _ := New().Unpack(test.bytes)
-			assert.Equalf(t, test.want, str, "Compressor.Unpack(%v)", test.bytes)
+			assert.Equalf(t, test.want, str, "Codec.Unpack(%v)", test.bytes)
 		})
 	}
 }

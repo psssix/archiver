@@ -28,7 +28,33 @@ func TestEncodeBinary(t *testing.T) {
 		test.name = fmt.Sprintf("encoding %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, encodeBinary(test.str), "encodeBinary(%v)", test.str)
+			binary, _ := encodeBinary(test.str)
+			assert.Equalf(t, test.want, binary, "encodeBinary(%v)", test.str)
+		})
+	}
+}
+
+func TestEncodeBinaryError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		str   string
+		error string
+	}{
+		{str: "π", error: "encode to binary error, unknown character 'π'"},
+		{str: "!ted Ω", error: "encode to binary error, unknown character 'Ω'"},
+		{str: "!my name is ∑", error: "encode to binary error, unknown character '∑'"},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("expect error when encoding an unexpected character %q", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			binary, err := encodeBinary(test.str)
+			assert.Emptyf(t, binary, "encodeBinary(%v) noе empty result when error", test.str)
+			assert.Equalf(t, test.error, err.Error(), "encodeBinary(%v) unexpected error message", test.str)
 		})
 	}
 }

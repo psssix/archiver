@@ -5,18 +5,18 @@ import (
 	"unicode"
 )
 
-type Compressor struct{}
+type Codec struct{}
 
-func New() Compressor {
-	return Compressor{}
+func New() Codec {
+	return Codec{}
 }
 
-func (_ Compressor) Pack(str string) ([]byte, error) {
-	bString := encodeBinary(escapeUpper(str))
+func (_ Codec) Pack(str string) ([]byte, error) {
+	bString, _ := encodeBinary(escapeUpper(str))
 	return fromBinaryString(bString, chunkSize).Bytes(), nil
 }
 
-func (_ Compressor) Unpack(bytes []byte) (string, error) {
+func (_ Codec) Unpack(bytes []byte) (string, error) {
 	bString := fromBytes(bytes).String()
 	tree := newDecodingTree(newEncodingTable())
 	return unescapeUpper(tree.decodeBinary(bString)), nil

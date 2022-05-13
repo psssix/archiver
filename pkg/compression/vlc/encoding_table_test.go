@@ -28,8 +28,9 @@ func TestEncodeBinary(t *testing.T) {
 		test.name = fmt.Sprintf("encoding %q", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			binary, _ := encodeBinary(test.str)
+			binary, err := encodeBinary(test.str)
 			assert.Equalf(t, test.want, binary, "encodeBinary(%v)", test.str)
+			assert.Nil(t, err)
 		})
 	}
 }

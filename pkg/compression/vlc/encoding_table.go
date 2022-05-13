@@ -6,16 +6,16 @@ import (
 )
 
 type EncodingError struct {
-	err string
+	msg string
 	r   rune
 }
 
-func NewEncodingError(err string, r rune) *EncodingError {
-	return &EncodingError{err: err, r: r}
+func NewEncodingError(msg string, r rune) *EncodingError {
+	return &EncodingError{msg: msg, r: r}
 }
 
 func (e *EncodingError) Error() string {
-	return fmt.Sprintf("encoding to binary error, %s %q", e.err, e.r)
+	return fmt.Sprintf("encoding to binary error, %s %q", e.msg, e.r)
 }
 
 // encodeBinary encode string into binary codes string without spaces.

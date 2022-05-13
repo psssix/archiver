@@ -9,9 +9,33 @@ import (
 const chunkSize = 8
 
 type (
-	binaryChunk  string
-	binaryChunks []binaryChunk
+	binaryChunk      string
+	binaryChunks     []binaryChunk
+	ParseBinaryError struct {
+		chunk string
+		err   error
+	}
 )
+
+func NewParseBinaryError(c string, err error) *ParseBinaryError {
+	return &ParseBinaryError{chunk: c, err: err}
+}
+
+func (e *ParseBinaryError) Error() string {
+	return fmt.Sprintf("can't parse binary chunk to number: %s for chunk %q", e.err.Error(), e.chunk)
+}
+
+// Unwrap returns the result of calling the Unwrap method on err, if err's type contains an Unwrap method returning error.
+// Otherwise, Unwrap returns nil.
+func (e *ParseBinaryError) Unwrap() error {
+	u, ok := e.err.(interface {
+		Unwrap() error
+	})
+	if !ok {
+		return e.err
+	}
+	return u.Unwrap()
+}
 
 // fromBinaryString splits binary string by chunks with given size.
 //
@@ -74,18 +98,19 @@ func (bcs binaryChunks) Bytes() []byte {
 	bytes := make([]byte, 0, len(bcs))
 
 	for _, bc := range bcs {
-		bytes = append(bytes, bc.Byte())
+		b, _ := bc.Byte()
+		bytes = append(bytes, b)
 	}
 
 	return bytes
 }
 
-func (bc binaryChunk) Byte() byte {
+func (bc binaryChunk) Byte() (byte, error) {
 	const binaryNumberBase = 2
 	num, err := strconv.ParseUint(string(bc), binaryNumberBase, chunkSize)
 	if err != nil {
-		panic(fmt.Sprintf("can't parse binary chunk to number: %s", err.Error()))
+		return 0, NewParseBinaryError(string(bc), err)
 	}
 
-	return byte(num)
+	return byte(num), nil
 }

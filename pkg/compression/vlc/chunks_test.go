@@ -281,7 +281,40 @@ func TestBinaryChunkByte(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunk %q to bytes", test.bc)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bc.Byte(), "binaryChunk(%v).Byte()", test.bc)
+			b, err := test.bc.Byte()
+			assert.Equalf(t, test.want, b, "binaryChunk(%v).Byte()", test.bc)
+			assert.Nil(t, err)
+		})
+	}
+}
+
+func TestBinaryChunkByteError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		bc    binaryChunk
+		error string
+	}{
+		{
+			name:  "lol",
+			bc:    binaryChunk("101000011"),
+			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"101000011\": value out of range for chunk \"101000011\""},
+		{
+			name:  "lol1",
+			bc:    binaryChunk("111111110"),
+			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"111111110\": value out of range for chunk \"111111110\"",
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			b, err := test.bc.Byte()
+			assert.Emptyf(t, b, "binaryChunk(%v).Byte() not empty result when error", test.bc)
+			assert.IsTypef(t, &ParseBinaryError{}, err, "binaryChunk(%v).Byte() unexpected error type", test.bc)
+			assert.Equalf(t, test.error, err.Error(), "binaryChunk(%v).Byte() unexpected error message", test.bc)
 		})
 	}
 }

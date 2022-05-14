@@ -10,9 +10,8 @@ func TestCodecPack(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		str  string
-		want []byte
+		name, str string
+		want      []byte
 	}{
 		{str: "", want: []byte{}},
 		{str: "Ted", want: []byte{0b00100010, 0b01101001, 0b01000000}},
@@ -48,9 +47,7 @@ func TestCodecPackUnknownCharacterError(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name  string
-		str   string
-		error string
+		name, str, error string
 	}{
 		{str: "®", error: "encoding to binary error, unknown character '®'"},
 		{str: "√", error: "encoding to binary error, unknown character '√'"},
@@ -111,9 +108,7 @@ func TestEscapeUpper(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		str  string
-		want string
+		name, str, want string
 	}{
 		{str: "", want: ""},
 		{str: "Ted", want: "!ted"},
@@ -135,9 +130,7 @@ func TestUnescapeUpper(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		str  string
-		want string
+		name, str, want string
 	}{
 		{str: "", want: ""},
 		{str: "!ted", want: "Ted"},

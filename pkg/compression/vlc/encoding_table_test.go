@@ -10,9 +10,7 @@ func TestEncodeBinary(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		str  string
-		want string
+		name, str, want string
 	}{
 		{str: "", want: ""},
 		{str: "!ted", want: "001000100110100101"},
@@ -39,9 +37,7 @@ func TestEncodingUnknownCharacterError(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name  string
-		str   string
-		error string
+		name, str, error string
 	}{
 		{str: "π", error: "encoding to binary error, unknown character 'π'"},
 		{str: "!ted Ω", error: "encoding to binary error, unknown character 'Ω'"},

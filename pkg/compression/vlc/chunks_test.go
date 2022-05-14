@@ -14,9 +14,8 @@ func TestFromBinaryString(t *testing.T) {
 		bString string
 	}
 	tests := []struct {
-		name string
-		str  string
-		want binaryChunks
+		name, str string
+		want      binaryChunks
 	}{
 		{
 			name: "split binary empty string to chunks with size 8",
@@ -76,10 +75,9 @@ func TestFromBytes(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name  string
-		str   string
-		bytes []byte
-		want  binaryChunks
+		name, str string
+		bytes     []byte
+		want      binaryChunks
 	}{
 		{str: "", bytes: []byte{}, want: binaryChunks{}},
 		{
@@ -178,10 +176,9 @@ func TestBinaryChunksBytes(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
-		str  string
-		bcs  binaryChunks
-		want []byte
+		name, str string
+		bcs       binaryChunks
+		want      []byte
 	}{
 		{str: "", bcs: binaryChunks{}, want: []byte{}},
 		{
@@ -229,10 +226,9 @@ func TestBinaryChunksBytesError(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name  string
-		str   string
-		bcs   binaryChunks
-		error string
+		name, str string
+		bcs       binaryChunks
+		error     string
 	}{
 		{
 			str:   "Ted",

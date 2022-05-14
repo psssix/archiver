@@ -5,10 +5,13 @@ import (
 	"strings"
 )
 
-type EncodingError struct {
-	msg string
-	r   rune
-}
+type (
+	encodingTable map[rune]string
+	EncodingError struct {
+		msg string
+		r   rune
+	}
+)
 
 func NewEncodingError(msg string, r rune) *EncodingError {
 	return &EncodingError{msg: msg, r: r}
@@ -43,8 +46,6 @@ func toBinary(r rune) (string, error) {
 
 	return code, nil
 }
-
-type encodingTable map[rune]string
 
 func newEncodingTable() encodingTable {
 	return encodingTable{

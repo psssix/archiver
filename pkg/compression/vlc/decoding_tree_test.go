@@ -54,9 +54,7 @@ func TestDecodingTreeDecodeBinary(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name    string
-		bString string
-		want    string
+		name, bString, want string
 	}{
 		{bString: "", want: ""},
 		{bString: "001000100110100101", want: "!ted"},

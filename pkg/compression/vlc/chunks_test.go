@@ -3,6 +3,7 @@ package vlc
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -219,9 +220,8 @@ func TestBinaryChunksBytes(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunks for string %q to bytes", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			b, err := test.bcs.Bytes()
+			b := test.bcs.Bytes()
 			assert.Equalf(t, test.want, b, "binaryChunks(%v).Bytes()", test.bcs)
-			assert.Nil(t, err)
 		})
 	}
 }
@@ -237,7 +237,7 @@ func TestBinaryChunksBytesError(t *testing.T) {
 		{
 			str:   "Ted",
 			bcs:   binaryChunks{"00100010", "01101001", "100000011"},
-			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"100000011\": value out of range for chunk \"100000011\"",
+			error: "can't parse binary chunks to bytes: strconv.ParseUint: parsing \"100000011\": value out of range",
 		},
 		{
 			str: "My name is Ted",
@@ -245,7 +245,7 @@ func TestBinaryChunksBytesError(t *testing.T) {
 				"00100000", "00110000", "00111100", "00011000", "01110111", "101010001", "01001010", "11100100",
 				"01001101",
 			},
-			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"101010001\": value out of range for chunk \"101010001\"",
+			error: "can't parse binary chunks to bytes: strconv.ParseUint: parsing \"101010001\": value out of range",
 		},
 	}
 
@@ -254,10 +254,9 @@ func TestBinaryChunksBytesError(t *testing.T) {
 		test.name = fmt.Sprintf("convert chunks for string %q to bytes", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			b, err := test.bcs.Bytes()
-			assert.Emptyf(t, b, "binaryChunk(%v).Bytes() not empty result when error", test.bcs)
-			assert.IsTypef(t, &ParseBinaryError{}, err, "binaryChunk(%v).Bytes() unexpected error type", test.bcs)
-			assert.Equalf(t, test.error, err.Error(), "binaryChunk(%v).Bytes() unexpected error message", test.bcs)
+			assert.PanicsWithErrorf(t, test.error, func() {
+				test.bcs.Bytes()
+			}, "binaryChunk(%v).Bytes() panic with unexpected error message", test.bcs)
 		})
 	}
 }
@@ -303,11 +302,11 @@ func TestBinaryChunkByteError(t *testing.T) {
 		{
 			name:  "lol",
 			bc:    binaryChunk("101000011"),
-			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"101000011\": value out of range for chunk \"101000011\""},
+			error: "strconv.ParseUint: parsing \"101000011\": value out of range"},
 		{
 			name:  "lol1",
 			bc:    binaryChunk("111111110"),
-			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"111111110\": value out of range for chunk \"111111110\"",
+			error: "strconv.ParseUint: parsing \"111111110\": value out of range",
 		},
 	}
 
@@ -317,7 +316,7 @@ func TestBinaryChunkByteError(t *testing.T) {
 			t.Parallel()
 			b, err := test.bc.Byte()
 			assert.Emptyf(t, b, "binaryChunk(%v).Byte() not empty result when error", test.bc)
-			assert.IsTypef(t, &ParseBinaryError{}, err, "binaryChunk(%v).Byte() unexpected error type", test.bc)
+			assert.IsTypef(t, &strconv.NumError{}, err, "binaryChunk(%v).Byte() unexpected error type", test.bc)
 			assert.Equalf(t, test.error, err.Error(), "binaryChunk(%v).Byte() unexpected error message", test.bc)
 		})
 	}

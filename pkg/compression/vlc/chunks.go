@@ -22,7 +22,7 @@ func NewParseBinaryError(c string, err error) *ParseBinaryError {
 }
 
 func (e *ParseBinaryError) Error() string {
-	return fmt.Sprintf("can't parse binary chunk to number: %s for chunk %q", e.err.Error(), e.chunk)
+	return fmt.Sprintf("can't parse binary chunks to bytes: %s", e.err.Error())
 }
 
 // Unwrap returns the result of calling the Unwrap method on err, if err's type contains an Unwrap method returning error.
@@ -94,25 +94,25 @@ func (bcs binaryChunks) String() string {
 }
 
 // Bytes join string representation of binary chunks info one lines and returns as byte slice
-func (bcs binaryChunks) Bytes() ([]byte, error) {
+func (bcs binaryChunks) Bytes() []byte {
 	bytes := make([]byte, 0, len(bcs))
 
 	for _, bc := range bcs {
 		b, err := bc.Byte()
 		if err != nil {
-			return nil, err
+			panic(NewParseBinaryError(string(bc), err))
 		}
 		bytes = append(bytes, b)
 	}
 
-	return bytes, nil
+	return bytes
 }
 
 func (bc binaryChunk) Byte() (byte, error) {
 	const binaryNumberBase = 2
 	num, err := strconv.ParseUint(string(bc), binaryNumberBase, chunkSize)
 	if err != nil {
-		return 0, NewParseBinaryError(string(bc), err)
+		return 0, err
 	}
 
 	return byte(num), nil

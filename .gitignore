@@ -16,6 +16,9 @@
 
 # Build directories
 /build/
+/archiver
+/example.txt
+/example.vlc
 
 # GoLand project files
 /.idea

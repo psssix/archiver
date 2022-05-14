@@ -94,15 +94,18 @@ func (bcs binaryChunks) String() string {
 }
 
 // Bytes join string representation of binary chunks info one lines and returns as byte slice
-func (bcs binaryChunks) Bytes() []byte {
+func (bcs binaryChunks) Bytes() ([]byte, error) {
 	bytes := make([]byte, 0, len(bcs))
 
 	for _, bc := range bcs {
-		b, _ := bc.Byte()
+		b, err := bc.Byte()
+		if err != nil {
+			return nil, err
+		}
 		bytes = append(bytes, b)
 	}
 
-	return bytes
+	return bytes, nil
 }
 
 func (bc binaryChunk) Byte() (byte, error) {

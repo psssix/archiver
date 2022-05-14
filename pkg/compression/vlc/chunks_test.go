@@ -248,12 +248,51 @@ func TestBinaryChunksBytes(t *testing.T) {
 			},
 		},
 	}
+
 	for _, test := range tests {
 		test := test
 		test.name = fmt.Sprintf("convert chunks for string %q to bytes", test.str)
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equalf(t, test.want, test.bcs.Bytes(), "binaryChunks(%v).Bytes()", test.bcs)
+			b, err := test.bcs.Bytes()
+			assert.Equalf(t, test.want, b, "binaryChunks(%v).Bytes()", test.bcs)
+			assert.Nil(t, err)
+		})
+	}
+}
+func TestBinaryChunksBytesError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		str   string
+		bcs   binaryChunks
+		error string
+	}{
+		{
+			str:   "Ted",
+			bcs:   binaryChunks{"00100010", "01101001", "100000011"},
+			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"100000011\": value out of range for chunk \"100000011\"",
+		},
+		{
+			str: "My name is Ted",
+			bcs: binaryChunks{
+				"00100000", "00110000", "00111100", "00011000", "01110111", "101010001", "01001010", "11100100",
+				"01001101",
+			},
+			error: "can't parse binary chunk to number: strconv.ParseUint: parsing \"101010001\": value out of range for chunk \"101010001\"",
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		test.name = fmt.Sprintf("convert chunks for string %q to bytes", test.str)
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			b, err := test.bcs.Bytes()
+			assert.Emptyf(t, b, "binaryChunk(%v).Bytes() not empty result when error", test.bcs)
+			assert.IsTypef(t, &ParseBinaryError{}, err, "binaryChunk(%v).Bytes() unexpected error type", test.bcs)
+			assert.Equalf(t, test.error, err.Error(), "binaryChunk(%v).Bytes() unexpected error message", test.bcs)
 		})
 	}
 }

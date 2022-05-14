@@ -16,7 +16,8 @@ func (_ Codec) Pack(str string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return fromBinaryString(bString, chunkSize).Bytes(), nil
+	bytes, _ := fromBinaryString(bString, chunkSize).Bytes()
+	return bytes, nil
 }
 
 func (_ Codec) Unpack(bytes []byte) (string, error) {

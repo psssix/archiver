@@ -40,10 +40,10 @@ func (e *ParseBinaryError) Unwrap() error {
 // fromBinaryString splits binary string by chunks with given size.
 //
 // i.g.: '100101011001010110010101' -> '10010101 10010101 10010101'
-func fromBinaryString(bString string, size int) binaryChunks {
+func fromBinaryString(bString string) binaryChunks {
 	strLen := len(bString)
-	count := strLen / size
-	if strLen%size != 0 {
+	count := strLen / chunkSize
+	if strLen%chunkSize != 0 {
 		count++
 	}
 
@@ -53,7 +53,7 @@ func fromBinaryString(bString string, size int) binaryChunks {
 	for i, bit := range bString {
 		buf.WriteRune(bit)
 
-		if (i+1)%size == 0 {
+		if (i+1)%chunkSize == 0 {
 			chunks = append(chunks, binaryChunk(buf.String()))
 			buf.Reset()
 		}
@@ -61,7 +61,7 @@ func fromBinaryString(bString string, size int) binaryChunks {
 
 	if buf.Len() != 0 {
 		last := buf.String()
-		last += strings.Repeat("0", size-len(last))
+		last += strings.Repeat("0", chunkSize-len(last))
 		chunks = append(chunks, binaryChunk(last))
 	}
 

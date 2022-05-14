@@ -11,68 +11,35 @@ func TestFromBinaryString(t *testing.T) {
 
 	type args struct {
 		bString string
-		size    int
 	}
 	tests := []struct {
 		name string
 		str  string
-		args args
 		want binaryChunks
 	}{
 		{
 			name: "split binary empty string to chunks with size 8",
-			args: args{
-				bString: "",
-				size:    8,
-			},
+			str:  "",
 			want: binaryChunks{},
 		},
 		{
 			name: "split binary string \"0010\" to chunks with size 8",
-			args: args{
-				bString: "0010",
-				size:    8,
-			},
+			str:  "0010",
 			want: binaryChunks{"00100000"},
 		},
 		{
 			name: "split binary string \"1111\" to chunks with size 8",
-			args: args{
-				bString: "1111",
-				size:    8,
-			},
+			str:  "1111",
 			want: binaryChunks{"11110000"},
 		},
 		{
 			name: fmt.Sprintf("split binary string %q to chunks with size %d", "Ted", 8),
-			args: args{
-				bString: "001000100110100101",
-				size:    8,
-			},
+			str:  "001000100110100101",
 			want: binaryChunks{"00100010", "01101001", "01000000"},
 		},
 		{
-			name: fmt.Sprintf("split binary string %q to chunks with size %d", "Ted", 4),
-			args: args{
-				bString: "001000100110100101",
-				size:    4,
-			},
-			want: binaryChunks{"0010", "0010", "0110", "1001", "0100"},
-		},
-		{
-			name: fmt.Sprintf("split binary string %q to chunks with size %d", "Ted", 6),
-			args: args{
-				bString: "001000100110100101",
-				size:    6,
-			},
-			want: binaryChunks{"001000", "100110", "100101"},
-		},
-		{
 			name: fmt.Sprintf("split binary string %q to chunks with size %d", "My name is Ted", 8),
-			args: args{
-				bString: "001000000011000000111100000110000111011101001010111001000100110100101",
-				size:    8,
-			},
+			str:  "001000000011000000111100000110000111011101001010111001000100110100101",
 			want: binaryChunks{
 				"00100000", "00110000", "00111100", "00011000", "01110111", "01001010", "11100100", "01001101",
 				"00101000",
@@ -80,10 +47,8 @@ func TestFromBinaryString(t *testing.T) {
 		},
 		{
 			name: fmt.Sprintf("split binary string %q to chunks with size %d", "Some pretty SUBsequence", 8),
-			args: args{
-				bString: "0010000101100010000111011100001010100010110011001000000111001000010100100000011001000000001001011010000000000010001110110000000101101",
-				size:    8,
-			},
+			str: "00100001011000100001110111000010101000101100110010000001110010000101001000000110010000000010010110" +
+				"10000000000010001110110000000101101",
 			want: binaryChunks{
 				"00100001", "01100010", "00011101", "11000010", "10100010", "11001100", "10000001", "11001000",
 				"01010010", "00000110", "01000000", "00100101", "10100000", "00000010", "00111011", "00000001",
@@ -99,8 +64,8 @@ func TestFromBinaryString(t *testing.T) {
 			assert.Equalf(
 				t,
 				test.want,
-				fromBinaryString(test.args.bString, test.args.size),
-				"fromBinaryString(%v, %v)", test.args.bString, test.args.size,
+				fromBinaryString(test.str),
+				"fromBinaryString(%v)", test.str,
 			)
 		})
 	}
